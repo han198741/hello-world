@@ -414,7 +414,31 @@
                 }
             })
             return this.constructor(this.constructor.unique(ret));
-        }
+        },
+        prev : function () {
+            var ret = [];
+            this.each(function () {
+                for (var node = this.previousSibling; node; node = node.previousSibling){
+                    if(node.nodeType === 1){
+                        ret.push(node);
+                        break;
+                    }
+                }
+            })
+            return this.constructor(ret);
+        },
+        prevAll : function () {
+            var ret = [];
+            this.each(function () {
+                for (var node = this.previousSibling; node; node = node.previousSibling){
+                    if(node.nodeType === 1){
+                        ret.push(node);
+                    }
+                }
+            })
+            return this.constructor(this.constructor.unique(ret));
+        },
+        
 
     });
 
