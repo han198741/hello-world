@@ -348,9 +348,55 @@
             return this;
         },
 
+        //创建文档片段，再将文档片段添加到目标元素中
+        // after : function (newNode) {
+        //     var text,
+        //         that = this,
+        //         frag;
+        //     if(itcast.isString(newNode) && !itcast.isHTML(newNode)){
+        //         text = newNode;
+        //         newNode = itcast();
+        //         newNode[0] = document.createTextNode(text);
+        //         newNode.length = 1;
+        //     }
+        //     else {
+        //         newNode = itcast(newNode);
+        //     }
+        //     this.each(function (elem, i) {
+        //         frag = document.createDocumentFragment();
+        //         newNode.each(function () {
+        //             frag.appendChild(i === 1 ? this : this.cloneNode(true))
+        //             that.constructor.insertAfter(frag, elem );
+        //         });
+        //     });
+        //     return this;
+        // }
+
+        //倒序将源节点添加到目标节点中
+        after : function (newNode) {
+            var text,
+                that = this;
+            if(itcast.isString(newNode) && itcast.isHTML(newNode)){
+                text = newNode;
+                newNode = itcast();
+                newNode[0] = document.createTextNode(text);
+                newNode.length = 1;
+            }
+            else {
+                newNode = this.constructor(newNode);
+            }
+            this.each(function (elem, i) {
+                for (var j = newNode.length-1; j>=0; j--){
+                    that.constructor.insertAfter(i === 0 ? newNode[j] : newNode[j].cloneNode(true), elem);
+                }
+            })
+            return this;
+
+        }
+
     });
 
-    
+
     itcast.extend({
         insertAfter : function (newNode, node) {
             node.parentNode.insertBefore(newNode, node.nextSibling);
