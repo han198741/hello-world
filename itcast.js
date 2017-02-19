@@ -391,7 +391,18 @@
                 }
             })
             return this;
-
+        },
+        next : function () {
+            var ret = [];
+            this.each(function () {
+                for (var node = this.nextSibling; node; node = node.nextSibling){
+                    if(node.nodeType === 1){
+                        ret.push(node);
+                        break;
+                    }
+                }
+            })
+            return this.constructor(ret);
         }
 
     });
