@@ -328,6 +328,24 @@
                 // this == elem
                 this.parentNode.removeChild(this);
             });
+        },
+        before : function (newNode) {
+              var text;
+            if(itcast.isString(newNode) && !itcast.isHTML(newNode)){
+                 text = newNode;
+                newNode = itcast();
+                newNode[0] = document.createTextNode(text);
+                newNode.length = 1;
+            }
+            else {
+                newNode = itcast(newNode);
+            }
+            this.each(function (telem, i) {
+                newNode.each(function () {
+                    telem.parentNode.insertBefore(i === 1 ? this : this.cloneNode(true), telem );
+                })
+            })
+            return this;
         }
     });
 
