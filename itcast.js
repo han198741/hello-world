@@ -403,6 +403,17 @@
                 }
             })
             return this.constructor(ret);
+        },
+        nextAll : function () {
+            var ret = [];
+            this.each(function () {
+                for (var node = this.nextSibling; node; node = node.nextSibling){
+                    if(node.nodeType === 1){
+                        ret.push(node);
+                    }
+                }
+            })
+            return this.constructor(this.constructor.unique(ret));
         }
 
     });
@@ -411,7 +422,15 @@
     itcast.extend({
         insertAfter : function (newNode, node) {
             node.parentNode.insertBefore(newNode, node.nextSibling);
-
+        },
+        unique: function (arr) {
+            var ret = [];
+            arr.forEach(function (v) {
+                if(ret.indexOf(v) ===-1){
+                    ret.push(v);
+                }
+            })
+            return ret;
         }
     })
 
