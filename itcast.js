@@ -438,7 +438,24 @@
             })
             return this.constructor(this.constructor.unique(ret));
         },
-        
+        parent : function () {
+            var ret = [];
+            this.each(function () {
+                this.parentNode && ret.push(this.parentNode);
+            })
+            return this.constructor(this.constructor.unique(ret));
+        }
+        siblings : function () {
+            var ret = [];
+            this.each(function () {
+                for (var node = this.parentNode.firstChild; node; node = this.nextSibling){
+                    if(node.nodeType === 1 && node !== this){
+                        ret.push(node);
+                    }
+                }
+            })
+            return this.constructor(this.constructor.unique(ret));
+        }
 
     });
 
