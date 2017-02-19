@@ -444,7 +444,7 @@
                 this.parentNode && ret.push(this.parentNode);
             })
             return this.constructor(this.constructor.unique(ret));
-        }
+        },
         siblings : function () {
             var ret = [];
             this.each(function () {
