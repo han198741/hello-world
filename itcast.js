@@ -346,8 +346,17 @@
                 })
             })
             return this;
-        }
+        },
+
     });
+
+    
+    itcast.extend({
+        insertAfter : function (newNode, node) {
+            node.parentNode.insertBefore(newNode, node.nextSibling);
+
+        }
+    })
 
     //选择器引擎
     //通过select函数，来查询dom元素
