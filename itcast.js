@@ -474,7 +474,131 @@
             return ret;
         }
     })
+    //事件模块
+    itcast.fn.extend({
+        on : function (type, callback) {
+            return this.each(function (type, callback) {
+                this.addEventListener(type, callback);
+            })
+        },
 
+        off : function (type, callback) {
+            return this.each(function (type, callback) {
+                this.removeEventListener(type, callback);
+            })
+        }
+
+    });
+    //添加快捷事件绑定的方法
+    //在数组元素中每一个都是要添加到原型上的方法的名字，也是事件类型的名字
+    itcast.each(('click dblclick mouseover mouseout mouseenter mouseleave mousemove ' +
+    'keypress keydown keyup focus blur').split(' '),function (type) {
+        itcast.fn[type] = function (callback) {
+            return this.on(type, callback);
+        };
+    });
+
+    //样式模块
+    function getCss(dom, name) {
+        return window.getComputedStyle(dom)[name];
+    }
+    function setCss(dom, name, value) {
+        if (value == undefined){
+            //枚举name对象属性
+            //对象的属性是要给dom添加样式属性名，name对象属性对应值，就是样式属性值。
+            for(var k in name){
+                dom.style[k] = name[k];
+            }
+            else {
+                //否则，就设置dom元素的单个样式
+                dom.style[name] = value;
+            }
+        }
+    }
+
+    itcast.fn.extend({
+        css : function (name, value) {
+            //只传一个参数
+            if(value == undefined){
+                //如果name类型为对象
+                //设置多样式
+                if (typeof name === 'object'){
+                    //遍历this上dom元素
+                    this.each(function () {
+                        //给当前遍历到的dom元素设置多样式
+                        setCss(this, name);
+                    })
+                } else {
+                    //如果那么不是对象，就获取第一个dom元素的指定样式值
+                    //如果itcast对象没有任何dom元素，就返回空字符串
+                    return this.length > 0 ? getCss(this[0], name) : '';
+                }
+            } else {
+                //遍历this上的dom元素
+                this.each(function () {
+                    //给当前遍历道德dom元素设置单个样式。
+                    setCss(this, name, value);
+                })
+            }
+            //如果css方法表示设置，此时要实现链式编程
+            return this;
+        },
+        hasClass : function (className) {
+            //定义该方法的返回ret，默认为false
+            var ret = false;
+            //遍历this上dom元素
+            this.each(function () {
+                //如果当前dom 元素具有指定的样式类
+                //ret值为true，同时结束循环
+                if(this.className.split(' ').indexOf(className) > -1){
+                    ret = true;
+                    return false;
+                }
+                if((' ' + this.className + ' ').indexOf(' '+ className + ' ') > -1){
+                    ret = true;
+                    return false;
+                }
+            });
+            return ret;
+        },
+        addClass : function (className) {
+            //遍历this， 并返回each方法的返回值，实现链式编程
+            return this.each(function () {
+                //将this（当前遍历到的dom）转换成itcast对象
+                //调用hasClass方法，判断当前dom是否具有样式类
+                //如果没有，就添加上
+                if(!itcast(this).hasClass(className)){
+                    this.className = this.className + ' ' + className;
+                }
+            })
+        },
+        removeClass : function (className) {
+            return this.each(function () {
+                //将当前dom元素的所有样式类艺术组形式存储
+                var classNames = this.className.split('');
+                //查找要删除的样式类在数组的索引值。
+                var start = classNames.indexOf(className);
+                //如果索引值大于-1，表示含有该样式类
+                if(start > -1){
+                    //使用splice方法将其删除
+                    classNames.splice(start, 1);
+                    //再将数组中元素以空格拼接成字符串，赋值费当前dom元素的className属性
+                    this.className = classNames.join(' ');
+                }
+            })
+        },
+
+        toggleClass : function (className) {
+            return this.each(function () {
+                var $this = itcast(this);
+                if($this.hasClass(className)){
+                    $this.removeClass(className);
+                } else {
+                    $this.addClass(className);
+                }
+            })
+        }
+    })
     //选择器引擎
     //通过select函数，来查询dom元素
     var select = function (selector, context) {
