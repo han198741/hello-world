@@ -599,6 +599,104 @@
             })
         }
     })
+
+    //属性模块
+
+    itcast.extend({
+        propFix: {
+            "for": "htmlFor",
+            "class": "className"
+        }
+    });
+
+    itcast.each [
+        "tabIndex",
+            "readOnly",
+            "maxLength",
+            "cellSpacing",
+            "cellPadding",
+            "rowSpan",
+            "colSpan",
+            "useMap",
+            "frameBorder",
+            "contentEditable"
+        ],function () {
+        itcast.propFix[this.toLowerCase()] = this;
+    })
+    itcast.fn.extend({
+        attr : function (name, value) {
+            if(value == undefined){
+                if(typeof name === 'object'){
+                    this.each(function (elem) {
+                        for(var k in name){
+                            elem.setAttribute(k, name[k]);
+                        }
+                    })
+                } else {
+                    return this[0] ? this[0].getAttribute(name) : '';
+                }
+            } else{
+                this.each(function () {
+                    this.setAttribute(name, value);
+                })
+            }
+            return this;
+        },
+
+        prop : function (name, value) {
+            var propName;
+            if(value == undefined){
+                if (typeof name === 'object'){
+                    this.each(function (elem) {
+                        for (var k in name){
+                        propName = itcast.propFix[k] ||k;
+                        this[propName] = name[k];
+                        }
+                    });
+                } else {
+                    propName = itcast.propFix[name] || name;
+                   this.length>0 ? this[0][propName] : '';
+                }
+            } else {
+                this.each(function () {
+                    propName = itcast.propFix[name] || name;
+                    this.setAttribute(name, value);
+                })
+            }
+            return this;
+        },
+        html: function (html) {
+            if(html == undefined){
+                return this.length>0 ? this[0].innerHTML : '';
+            }
+            else {
+                return this.each(function () {
+                    this.innerHTML=html;
+                });
+            };
+        },
+        text : function (txt) {
+            if (txt == undefined){
+                return this[0] ? this[0].textContent : '';
+            }
+            else {
+                return this.each(function () {
+                    this.textContent = txt;
+                })
+            }
+        },
+        val : function (value) {
+            if(value == undefined ){
+                return this[0] ? this[0].value : '';
+            } else {
+                this.each(function () {
+                    this.value = value;
+                })
+            }
+            return this;
+        }
+
+    })
     //选择器引擎
     //通过select函数，来查询dom元素
     var select = function (selector, context) {
